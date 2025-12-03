@@ -1,78 +1,57 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Biblioteca</title>
+{% extends "catalogo/base.html" %}
 
-    <!-- BOOTSTRAP 5 -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    >
+{% block content %}
 
-    <!-- Icons -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
-    >
+<div class="container-card">
 
-    <style>
-        body {
-            background: #f7f7f7;
-        }
-        .navbar-brand {
-            font-weight: bold;
-        }
-        .container-card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0px 2px 10px rgba(0,0,0,0.1);
-            margin-top: 30px;
-        }
-    </style>
-</head>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3><i class="bi bi-person-lines-fill"></i> Autores</h3>
 
-<body>
-
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-    <div class="container">
-        <a class="navbar-brand" href="{% url 'livro_list' %}">
-            <i class="bi bi-book-half"></i> Biblioteca
+        <a href="{% url 'autor_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Novo Autor
         </a>
-
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarNav">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'livro_list' %}">Livros</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'autor_list' %}">Autores</a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'editora_list' %}">Editoras</a>
-                </li>
-
-            </ul>
-        </div>
-
     </div>
-</nav>
 
-<div class="container">
-    {% block content %}{% endblock %}
+    <table class="table table-bordered table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Nome</th>
+                <th class="text-center">Ações</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for autor in object_list %}
+            <tr>
+                <td>{{ autor.nome }}</td>
+
+                <td class="text-center">
+                    <!-- 👁 Detalhes (mostra email lá) -->
+                    <a href="{% url 'autor_detail' autor.pk %}" class="btn btn-sm btn-info">
+                        <i class="bi bi-eye"></i>
+                    </a>
+
+                    <!-- ✏ Editar -->
+                    <a href="{% url 'autor_update' autor.pk %}" class="btn btn-sm btn-warning">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+
+                    <!-- 🗑 Excluir -->
+                    <a href="{% url 'autor_delete' autor.pk %}" class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2" class="text-center text-muted">
+                    Nenhum autor cadastrado.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 </div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-</body>
-</html>
+{% endblock %}

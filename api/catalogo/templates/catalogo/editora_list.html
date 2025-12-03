@@ -2,49 +2,56 @@
 
 {% block content %}
 
-<div class="container-card" style="max-width: 650px; margin: 0 auto;">
-    <h3 class="mb-4">
-        <i class="bi bi-building"></i> Detalhes da Editora
-    </h3>
+<div class="container-card">
 
-    <dl class="row">
-        <dt class="col-sm-4">Nome</dt>
-        <dd class="col-sm-8">{{ object.nome }}</dd>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3><i class="bi bi-building"></i> Editoras</h3>
 
-        <dt class="col-sm-4">Cidade</dt>
-        <dd class="col-sm-8">
-            {% if object.cidade %}
-                {{ object.cidade }}
-            {% else %}
-                -
-            {% endif %}
-        </dd>
-    </dl>
-
-    <h5 class="mt-4">Livros desta editora</h5>
-    <ul>
-        {% for livro in object.livro_set.all %}
-            <li>{{ livro.titulo }} ({{ livro.ano_publicacao }})</li>
-        {% empty %}
-            <li class="text-muted">Nenhum livro cadastrado para esta editora.</li>
-        {% endfor %}
-    </ul>
-
-    <div class="d-flex justify-content-between mt-4">
-        <a href="{% url 'editora_list' %}" class="btn btn-secondary">
-            <i class="bi bi-arrow-left"></i> Voltar
+        <a href="{% url 'editora_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Nova Editora
         </a>
-
-        <div>
-            <a href="{% url 'editora_update' object.pk %}" class="btn btn-warning">
-                <i class="bi bi-pencil"></i> Editar
-            </a>
-
-            <a href="{% url 'editora_delete' object.pk %}" class="btn btn-danger">
-                <i class="bi bi-trash"></i> Excluir
-            </a>
-        </div>
     </div>
+
+    <table class="table table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Nome</th>
+                <th class="text-center">Ações</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for editora in object_list %}
+            <tr>
+                <td>{{ editora.nome }}</td>
+
+                <td class="text-center">
+                    <!-- 👁 Detalhes (cidade lá) -->
+                    <a href="{% url 'editora_detail' editora.pk %}" class="btn btn-sm btn-info">
+                        <i class="bi bi-eye"></i>
+                    </a>
+
+                    <!-- ✏ Editar -->
+                    <a href="{% url 'editora_update' editora.pk %}" class="btn btn-sm btn-warning">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+
+                    <!-- 🗑 Excluir -->
+                    <a href="{% url 'editora_delete' editora.pk %}" class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2" class="text-center text-muted">
+                    Nenhuma editora cadastrada.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
 </div>
 
 {% endblock %}
