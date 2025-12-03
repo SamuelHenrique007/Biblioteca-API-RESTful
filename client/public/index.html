@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Biblioteca - Cliente da API</title>
+
+    <!-- BOOTSTRAP 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Ícones Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <!-- CSS próprio -->
+    <link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+
+    <!-- Se não estiver logado, volta para o login -->
+    <script>
+        if (!localStorage.getItem("accessToken")) {
+            window.location.href = "/login.html";
+        }
+    </script>
+
+    <nav class="navbar navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-cloud-arrow-down"></i>
+                Cliente da API - Biblioteca
+            </a>
+            <button class="btn btn-outline-light btn-sm" id="btn-logout">
+                <i class="bi bi-box-arrow-left"></i> Sair
+            </button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="main-card">
+
+            <!-- ALERTA GLOBAL (mensagens gerais) -->
+            <div id="alert-global"></div>
+
+            <!-- Abas -->
+            <ul class="nav nav-tabs mb-3" id="tabs">
+                <li class="nav-item">
+                    <button class="nav-link active" id="tab-livros" data-bs-toggle="tab" data-bs-target="#pane-livros">
+                        <i class="bi bi-journal-bookmark"></i> Livros
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="tab-autores" data-bs-toggle="tab" data-bs-target="#pane-autores">
+                        <i class="bi bi-person-lines-fill"></i> Autores
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="tab-editoras" data-bs-toggle="tab" data-bs-target="#pane-editoras">
+                        <i class="bi bi-building"></i> Editoras
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+
+                <!-- ================== LIVROS ================== -->
+                <div class="tab-pane fade show active" id="pane-livros">
+
+                    <div id="alert-livros"></div>
+
+                    <div class="row mb-3">
+                        <!-- Formulário de Livros -->
+                        <div class="col-md-5 mb-3 mb-md-0">
+                            <div class="border rounded p-3 bg-light">
+                                <div class="form-section-title">
+                                    <i class="bi bi-plus-circle"></i> Novo Livro
+                                </div>
+                                <form id="form-livro">
+                                    <div class="mb-2">
+                                        <label class="form-label">Título</label>
+                                        <input type="text" id="livro-titulo" class="form-control" required>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">Ano de publicação</label>
+                                        <input type="number" id="livro-ano" class="form-control" required>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">Autor</label>
+                                        <select id="livro-autor" class="form-select" required>
+                                            <option value="">Selecione um autor</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">Editora (opcional)</label>
+                                        <select id="livro-editora" class="form-select">
+                                            <option value="">Nenhuma</option>
+                                        </select>
+                                    </div>
+                                    <button type="submit" class="btn btn-success w-100 mt-2">
+                                        <i class="bi bi-check-circle"></i>
+                                        <span id="btn-livro-texto">Salvar Livro</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Tabela de Livros -->
+                        <div class="col-md-7">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h4 class="mb-0">Livros (GET /api/livros/)</h4>
+                                <button class="btn btn-outline-primary btn-sm" onclick="carregarLivros()">
+                                    <i class="bi bi-arrow-clockwise"></i> Atualizar
+                                </button>
+                            </div>
+
+                            <table class="table table-striped table-hover align-middle">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Título</th>
+                                        <th class="text-center">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-livros">
+                                    <tr>
+                                        <td colspan="2" class="text-center text-muted">
+                                            Carregando...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ================== AUTORES ================== -->
+                <div class="tab-pane fade" id="pane-autores">
+
+                    <div id="alert-autores"></div>
+
+                    <div class="row mb-3">
+                        <!-- Formulário de Autores -->
+                        <div class="col-md-5 mb-3 mb-md-0">
+                            <div class="border rounded p-3 bg-light">
+                                <div class="form-section-title">
+                                    <i class="bi bi-plus-circle"></i> Novo Autor
+                                </div>
+                                <form id="form-autor">
+                                    <div class="mb-2">
+                                        <label class="form-label">Nome</label>
+                                        <input type="text" id="autor-nome" class="form-control" required>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">Email</label>
+                                        <input type="email" id="autor-email" class="form-control">
+                                    </div>
+                                    <button type="submit" class="btn btn-success w-100 mt-2">
+                                        <i class="bi bi-check-circle"></i>
+                                        <span id="btn-autor-texto">Salvar Autor</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Tabela de Autores -->
+                        <div class="col-md-7">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h4 class="mb-0">Autores (GET /api/autores/)</h4>
+                                <button class="btn btn-outline-primary btn-sm" onclick="carregarAutores(true)">
+                                    <i class="bi bi-arrow-clockwise"></i> Atualizar
+                                </button>
+                            </div>
+
+                            <table class="table table-striped table-hover align-middle">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th class="text-center">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-autores">
+                                    <tr>
+                                        <td colspan="2" class="text-center text-muted">
+                                            Carregando...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- ================== EDITORAS ================== -->
+                <div class="tab-pane fade" id="pane-editoras">
+
+                    <div id="alert-editoras"></div>
+
+                    <div class="row mb-3">
+                        <!-- Formulário de Editoras -->
+                        <div class="col-md-5 mb-3 mb-md-0">
+                            <div class="border rounded p-3 bg-light">
+                                <div class="form-section-title">
+                                    <i class="bi bi-plus-circle"></i> Nova Editora
+                                </div>
+                                <form id="form-editora">
+                                    <div class="mb-2">
+                                        <label class="form-label">Nome</label>
+                                        <input type="text" id="editora-nome" class="form-control" required>
+                                    </div>
+                                    <div class="mb-2">
+                                        <label class="form-label">Cidade</label>
+                                        <input type="text" id="editora-cidade" class="form-control">
+                                    </div>
+                                    <button type="submit" class="btn btn-success w-100 mt-2">
+                                        <i class="bi bi-check-circle"></i>
+                                        <span id="btn-editora-texto">Salvar Editora</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <!-- Tabela de Editoras -->
+                        <div class="col-md-7">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h4 class="mb-0">Editoras (GET /api/editoras/)</h4>
+                                <button class="btn btn-outline-primary btn-sm" onclick="carregarEditoras(true)">
+                                    <i class="bi bi-arrow-clockwise"></i> Atualizar
+                                </button>
+                            </div>
+
+                            <table class="table table-striped table-hover align-middle">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th class="text-center">Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tbody-editoras">
+                                    <tr>
+                                        <td colspan="2" class="text-center text-muted">
+                                            Carregando...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE DETALHES -->
+    <div class="modal fade" id="detailModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title" id="detailModalLabel">Detalhes</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="detailModalBody">
+                    ...
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        Fechar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE CONFIRMAÇÃO DE EXCLUSÃO -->
+    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">Confirmar exclusão</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="confirmDeleteText">Tem certeza que deseja excluir este
+                        item?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                        <i class="bi bi-trash"></i> Excluir
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOOTSTRAP JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- JS da aplicação -->
+    <script src="/js/app.js"></script>
+
+</body>
+
+</html>
