@@ -1,0 +1,60 @@
+{% extends "catalogo/base.html" %}
+
+{% block content %}
+
+<div class="container-card">
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3>
+            <i class="bi bi-journal-bookmark"></i>
+            Livros
+        </h3>
+
+        <a href="{% url 'livro_create' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Novo Livro
+        </a>
+    </div>
+
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>Título</th>
+                <th class="text-center">Ações</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for livro in object_list %}
+            <tr>
+                <td>{{ livro.titulo }}</td>
+
+                <td class="text-center">
+                    <!-- 👁 Detalhes -->
+                    <a href="{% url 'livro_detail' livro.pk %}" class="btn btn-sm btn-info">
+                        <i class="bi bi-eye"></i>
+                    </a>
+
+                    <!-- ✏ Editar -->
+                    <a href="{% url 'livro_update' livro.pk %}" class="btn btn-sm btn-warning">
+                        <i class="bi bi-pencil"></i>
+                    </a>
+
+                    <!-- 🗑 Excluir -->
+                    <a href="{% url 'livro_delete' livro.pk %}" class="btn btn-sm btn-danger">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2" class="text-center text-muted">
+                    Nenhum livro cadastrado.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</div>
+
+{% endblock %}

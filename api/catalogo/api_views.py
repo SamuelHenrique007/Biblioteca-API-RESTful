@@ -7,7 +7,7 @@ from .serializers import LivroSerializer, AutorSerializer, EditoraSerializer
 
 
 class AutorViewSet(viewsets.ModelViewSet):
-    queryset = Autor.objects.all()
+    queryset = Autor.objects.all()/home/breno/Documents/editora_detail.html /home/breno/Documents/editora_list.html
     serializer_class = AutorSerializer
     permission_classes = [IsAuthenticated]
 
